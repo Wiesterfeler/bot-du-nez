@@ -32,6 +32,8 @@ module.exports = {
 
 		let nbLine = 0;
 		let lineWord =  Math.floor(Math.random() * 600);
+		let wordToBeFound = undefined;
+
 		rl.on('line', (line) => {
 				if (nbLine++ === lineWord-1) {
 						let wordToBeFound = line;
@@ -47,6 +49,8 @@ module.exports = {
 
 		console.log("Word set");
 
-		return wordToBeFound.toUpperCase();
+		if(wordToBeFound !== undefined) {
+			return wordToBeFound.toUpperCase();
+		}
 	}
 };
