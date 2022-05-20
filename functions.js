@@ -14,12 +14,12 @@ module.exports = {
 				branlos = message.mentions.users.at(0);
 			}
 			
-			console.log(tools.generateDate() + "User \"" + branlos +  "\" found");
+			console.log(date.getDay() + "/" + date.getMonth() + "/" + date.getFullYear() + " - " + date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds() + ": " + "User \"" + branlos +  "\" found");
 		} else {
-			console.log(tools.generateDate() + "User not found");
+			console.log(date.getDay() + "/" + date.getMonth() + "/" + date.getFullYear() + " - " + date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds() + ": " + "User not found");
 			branlos = {id: branlos.id, name: branlos.username, pts: 0};
 			guild.branleurs.push(branlos);
-			console.log(tools.generateDate() + "User " + branlos + " created");
+			console.log(date.getDay() + "/" + date.getMonth() + "/" + date.getFullYear() + " - " + date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds() + ": " + "User " + branlos + " created");
 		}
 
 		return branlos;
