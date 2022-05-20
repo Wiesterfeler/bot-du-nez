@@ -38,6 +38,9 @@ module.exports = {
 				if (nbLine++ === lineWord-1) {
 						wordToBeFound = line;
 						rl.close();
+
+						console.log("Word set");
+						console.log("word: " + wordToBeFound);
 				}
 		});
 
@@ -45,9 +48,6 @@ module.exports = {
 				readline.moveCursor(0, 0);
 				rl.removeAllListeners();
 		});
-
-		console.log("Word set");
-		console.log("word: " + wordToBeFound);
 
 		if(wordToBeFound !== undefined) {
 			return wordToBeFound.toUpperCase();
