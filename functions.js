@@ -31,7 +31,7 @@ module.exports = {
 		});
 
 		let nbLine = 0;
-		let lineWord = tools.getRandomInt(257);
+		let lineWord =  Math.floor(Math.random() * 600);
 		rl.on('line', (line) => {
 				if (nbLine++ === lineWord-1) {
 						let wordToBeFound = line;

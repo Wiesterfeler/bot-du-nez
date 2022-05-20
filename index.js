@@ -44,8 +44,6 @@ let replyMsg = "";
 let randomHourPoints = tools.getRandomInt(24);
 let randomHourRandomPlayer = tools.getRandomInt(24);
 let ptsWon = 1;
-let nbLine = 0;
-let lineWord = tools.getRandomInt(451277);
 let wordToBeFound = tools.setWord(readline, fs);
 wordToBeFound = "test";
 
