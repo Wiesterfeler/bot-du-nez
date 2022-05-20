@@ -45,7 +45,7 @@ let randomHourPoints = tools.getRandomInt(24);
 let randomHourRandomPlayer = tools.getRandomInt(24);
 let ptsWon = 1;
 let wordToBeFound = tools.setWord(readline, fs);
-wordToBeFound = "test";
+wordToBeFound = "TEST";
 
 const jobRandomHours = schedule.scheduleJob('0 0 0 * * *', function() {
 	randomHourPoints = tools.getRandomInt(24);
@@ -112,7 +112,19 @@ client.on('messageCreate', message => {
 		return;
 	}
 
-	if(messageContent.includes("NEZ") || messageContent.includes("NOSE") || messageContent.includes(wordToBeFound)) {
+	if(messageContent.includes(wordToBeFound)) {
+		if(guild.wordFound !== false) {
+			branlos = tools.findBranlos();
+			guild.wordFound = true;
+			branlos.pts = branlos.pts + 5;
+			replyMsg += "Bravo " + branlos.name + " ! Tu as été le.a premier.e à trouver le mot secret \"" + wordToBeFound + "\", tu as " + branlos.pts + " point(s)";
+			
+			newData = JSON.stringify(guilds, null, 4);
+			fs.writeFileSync('branleurs.json', newData);
+		}
+	}
+
+	if(messageContent.includes("NEZ") || messageContent.includes("NOSE")) {
 		if(date.getHours() === date.getMinutes() || date.getHours() == reverseMinutes || date.getMinutes() == reverseHours) {
 			if(date.getMinutes() !== guild.lastMinuteWon) {
 				guild.alreadyWon = false;
@@ -127,21 +139,7 @@ client.on('messageCreate', message => {
 					console.log(tools.generateDate() + "User \"" + branlos +  "\" found");
 					replyMsg += "C'est l'heure de la personne random\n";
 				} else {
-					if(message.mentions.users.size > 0) {
-						branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0));
-
-						if(branlos === undefined) {
-							branlos = message.mentions.users.at(0);
-						}
-						
-						console.log(tools.generateDate() + "User \"" + branlos +  "\" found");
-					} else {
-						branlos = message.author;
-						console.log(tools.generateDate() + "User not found");
-						branlos = {id: branlos.id, name: branlos.username, pts: 0};
-						guild.branleurs.push(branlos);
-						console.log(tools.generateDate() + "User " + branlos + " created");
-					}
+					branlos = tools.findBranlos();
 				}
 
 				if(date.getHours() == randomHourPoints) {
@@ -164,12 +162,6 @@ client.on('messageCreate', message => {
 				if (messageContent.startsWith("NEZ") || messageContent.startsWith("NOSE")){
 					branlos.pts = branlos.pts + ptsWon;
 					replyMsg += "Bravo " + branlos.name + " ! Tu as été le.a premier.e à dire \"nez\" au bon moment, tu as " + branlos.pts + " point(s)";
-				}
-
-				if (messageContent.includes(wordToBeFound)) {
-					branlos.pts = branlos.pts + 5;
-					replyMsg += "Bravo " + branlos.name + " ! Tu as été le.a premier.e à trouver le mot secret \"" + wordToBeFound + "\", tu as " + branlos.pts + " point(s)";
-					guild.wordFound = true;
 				}
 
 				guild.alreadyWon = true;

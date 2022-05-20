@@ -6,24 +6,23 @@ module.exports = {
 	getRandomInt: function(max) {
 		return Math.floor(Math.random() * max);
 	},
-	sortBranleurs: function(guilds, guild) {
-		branleurs = guilds.find(branleur => branleur.id === guild.id).branleurs;
+	findBranlos: function() {
+		let branlos = undefined;
 
-		let sortedBranleurs = branleurs.sort(function(a, b) {
-			return b.pts - a.pts;
-		});
+		if (message.mentions.users.size > 0) {
+			if((branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0))) === undefined) {
+				branlos = message.mentions.users.at(0);
+			}
+			
+			console.log(tools.generateDate() + "User \"" + branlos +  "\" found");
+		} else {
+			console.log(tools.generateDate() + "User not found");
+			branlos = {id: branlos.id, name: branlos.username, pts: 0};
+			guild.branleurs.push(branlos);
+			console.log(tools.generateDate() + "User " + branlos + " created");
+		}
 
-		let standings = "";
-		let i = 1;
-		sortedBranleurs.forEach(branleur => {
-			standings += i + " : " + branleur.name + " avec " + branleur.pts + " point(s)\n";
-			i++;
-		});
-
-		if(standings === "")
-			return "Personne n'est dans le classement";
-
-		return standings;
+		return branlos;
 	},
 	setWord: function(readline, fs) {
 		let rl = readline.createInterface({
@@ -52,5 +51,24 @@ module.exports = {
 		if(wordToBeFound !== undefined) {
 			return wordToBeFound.toUpperCase();
 		}
+	},
+	sortBranleurs: function(guilds, guild) {
+		branleurs = guilds.find(branleur => branleur.id === guild.id).branleurs;
+
+		let sortedBranleurs = branleurs.sort(function(a, b) {
+			return b.pts - a.pts;
+		});
+
+		let standings = "";
+		let i = 1;
+		sortedBranleurs.forEach(branleur => {
+			standings += i + " : " + branleur.name + " avec " + branleur.pts + " point(s)\n";
+			i++;
+		});
+
+		if(standings === "")
+			return "Personne n'est dans le classement";
+
+		return standings;
 	}
 };
