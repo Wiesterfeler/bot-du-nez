@@ -16,7 +16,7 @@ client.once('ready', () => {
 client.login(token);
 
 rl = readline.createInterface({
-	input: fs.createReadStream('words.txt');
+	input: fs.createReadStream('words.txt')
 });
 
 let data = fs.readFileSync('branleurs.json');
