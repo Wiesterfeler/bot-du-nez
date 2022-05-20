@@ -46,14 +46,14 @@ let randomHourRandomPlayer = tools.getRandomInt(24);
 let ptsWon = 1;
 let nbLine = 0;
 let lineWord = tools.getRandomInt(451277);
-let wordToBeFound = tools.setWord(readline);
+let wordToBeFound = tools.setWord(readline, fs);
 wordToBeFound = "test";
 
 const jobRandomHours = schedule.scheduleJob('0 0 0 * * *', function() {
 	randomHourPoints = tools.getRandomInt(24);
 	randomHourRandomPlayer = tools.getRandomInt(24);
 	console.log(tools.generateDate() + "Random numbers reset");
-	wordToBeFound = tools.setWord(readline);
+	wordToBeFound = tools.setWord(readline, fs);
 	guilds = JSON.parse(fs.readFileSync('branleurs.json'));
 	guilds.forEach(guild => {
 		guild.wordFound = false;

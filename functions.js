@@ -25,7 +25,7 @@ module.exports = {
 
 		return standings;
 	},
-	setWord: function(readline) {
+	setWord: function(readline, fs) {
 		let rl = readline.createInterface({
 			input: fs.createReadStream('words.txt')
 		});
