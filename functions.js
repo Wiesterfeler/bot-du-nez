@@ -36,18 +36,18 @@ module.exports = {
 
 		rl.on('line', (line) => {
 				if (nbLine++ === lineWord-1) {
-						let wordToBeFound = line;
+						wordToBeFound = line;
 						rl.close();
 				}
 		});
 
 		rl.on('close', () => {
-				console.log("word: " + wordToBeFound);
 				readline.moveCursor(0, 0);
 				rl.removeAllListeners();
 		});
 
 		console.log("Word set");
+		console.log("word: " + wordToBeFound);
 
 		if(wordToBeFound !== undefined) {
 			return wordToBeFound.toUpperCase();
