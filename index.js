@@ -15,6 +15,10 @@ client.once('ready', () => {
 
 client.login(token);
 
+rl = readline.createInterface({
+	input: fs.createReadStream('words.txt');
+});
+
 let data = fs.readFileSync('branleurs.json');
 let guilds = JSON.parse(data);
 let guild = undefined;
@@ -46,11 +50,35 @@ let replyMsg = "";
 let randomHourPoints = tools.getRandomInt(24);
 let randomHourRandomPlayer = tools.getRandomInt(24);
 let ptsWon = 1;
+let nbLine = 0;
+let lineWord = tools.getRandomInt(451277);
+let wordToBeFound = null;
 
 const jobRandomHours = schedule.scheduleJob('0 0 0 * * *', function() {
 	randomHourPoints = tools.getRandomInt(24);
 	randomHourRandomPlayer = tools.getRandomInt(24);
 	console.log(tools.generateDate() + "Random numbers reset");
+
+	rl = readline.createInterface({
+        input: fs.createReadStream('words.txt')
+	});
+
+	nbLine = 0;
+	lineWord = tools.getRandomInt(257);
+	rl.on('line', (line) => {
+			if (nbLine++ === lineWord-1) {
+					wordToBeFound = line;
+					rl.close();
+			}
+	});
+
+	rl.on('close', () => {
+			console.log("word: " + wordToBeFound);
+			readline.moveCursor(0, 0);
+			rl.removeAllListeners();
+	});
+
+	console.log("Word set");
 });
 
 const jobResetScores = schedule.scheduleJob('0 0 0 * * 1', function() {
@@ -69,42 +97,44 @@ client.on('messageCreate', message => {
 
 	userGettingPoint = null;
 	replyMsg = "";
+	messageContent = message.content.toUpperCase();
 
-	guild = undefined;
-
-	guilds.forEach(guildIndex => {
-		if (guildIndex.id === message.guild.id) {
-			guild = guildIndex;
-		}
-	});
+	guild = guilds.find(guild => guild.id = message.guild.id);
+	
 	if (guild === undefined){
 		guild = {id: message.guild.id, branleurs: [], alreadyWon: false, alreadyWonMessagesIndex: 0, lastMinutesWon: (date.getHours() - 1)};
-		console.log("guild :" + guild + " created");
+		console.log("guild :" + guild.name + " created");
 		guilds.push(guild);
 		fs.writeFileSync('branleurs.json', JSON.stringify(guilds, null, 4));
 		console.log(tools.generateDate() + "Guilds serialized");
 	}
-	if(message.content.toUpperCase() === "NEZ RESULTATS") {
+
+	if(messageContent === "NEZ RESULTATS") {
 		message.reply(tools.sortBranleurs(JSON.parse(fs.readFileSync('branleurs_last_week.json')), guild));
+		return;
 	}
 
-	if(message.content.toUpperCase() === "NEZ CLASSEMENT") {
+	if(messageContent === "NEZ CLASSEMENT") {
 		message.reply(tools.sortBranleurs(guilds, guild));
+		return;
 	}
 
-	if(message.content.toLowerCase() === "matthieu est rentré" || message.content.toLowerCase() === "mattbieurt est rentré" || (message.content.toLowerCase() === "je suis rentré" && message.author.id == 303274212091625472)) {
+	if(messageContent === "MATTHIEU EST RENTRÉ" || messageContent === "MATTBIEURT EST RENTRÉ" || (messageContent === "JE SUIS RENTRÉ" && message.author.id == 303274212091625472)) {
 		message.reply("MATTHIEU EST DE RETOUR OUIII");
+		return;
 	}
 
-	if(message.content.toLowerCase() === "matthieu n'est pas encore revenu mais revient dimanche" || (message.content.toLowerCase() === "je suis pas encore revenu mais je reviens dimanche" && message.author.id == 303274212091625472) || (message.content.toLowerCase() === "je ne suis pas encore revenu mais je reviens dimanche" && message.author.id == 303274212091625472)) {
+	if(messageContent === "MATTHIEU N'EST PAS ENCORE REVENU MAIS REVIENT DIMANCHE" || (messageContent === "JE SUIS PAS ENCORE REVENU MAIS JE REVIENS DIMANCHE" && message.author.id == 303274212091625472) || (messageContent === "JE NE SUIS PAS ENCORE REVENU MAIS JE REVIENS DIMANCHE" && message.author.id == 303274212091625472)) {
 		message.reply("YOUHOU MATTHIEU N'EST PAS ENCORE REVENU MAIS IL REVIENT DIMANCHE YOUPII");
+		return;
 	}
 
-	if(message.content.toLowerCase() === "matthieu c'est dimanche tu es censé être revenu") {
+	if(messageContent === "MATTHIEU C'EST DIMANCHE TU ES CENSÉ ÊTRE REVENU") {
 		message.reply("Il abuse j'ai pas raison la miff ?");
+		return;
 	}
 
-	if(message.content.toUpperCase() === "NEZ" || message.content.toUpperCase().startsWith("NEZ <@") || message.content.toUpperCase() === "NOSE" || message.content.toUpperCase().startsWith("-NEZ <@") || message.content.toUpperCase().startsWith("NOSE <@") || message.content.toUpperCase().startsWith("-NOSE <@")) {
+	if(messageContent.includes("NEZ") || messageContent.includes("NOSE")) {
 		if(date.getHours() === date.getMinutes() || date.getHours() == reverseMinutes || date.getMinutes() == reverseHours) {
 			if(date.getMinutes() !== guild.lastMinuteWon) {
 				guild.alreadyWon = false;
@@ -114,58 +144,43 @@ client.on('messageCreate', message => {
 			if(!guild.alreadyWon) {
 				branlos = undefined;
 
-				if(date.getHours() == randomHourRandomPlayer) {
-					userGettingPoint = guild.branleurs.at(Math.floor(Math.random() * guild.branleurs.length));
+				if(date.getHours() == randomHourRandomPlayer && guild.branleurs.length > 0) {
+					branlos = guild.branleurs.at(Math.floor(Math.random() * guild.branleurs.length)-1);
 					replyMsg += "C'est l'heure de la personne random\n";
 				} else {
 					if(message.mentions.users.size > 0) {
-						guild.branleurs.forEach(branleur => {
-							if(branleur.id === message.mentions.users.at(0)) {
-								userGettingPoint = branleur;
-							}
-						});
+						branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0));
 
-						if(userGettingPoint === null) {
-							userGettingPoint = message.mentions.users.at(0);
+						if(branlos === undefined) {
+							branlos = message.mentions.users.at(0);
 						}
 					} else {
-						userGettingPoint = message.author;
+						branlos = message.author;
+						console.log(tools.generateDate() + "User not found");
+						branlos = {id: branlos.id, name: branlos.username, pts: 0};
+						guild.branleurs.push(branlos);
+						console.log(tools.generateDate() + "User " + branlos + " created");
 					}
 				}
 
-				guild.branleurs.forEach(branleur => {
-					if (branleur.id === userGettingPoint.id) {
-						branlos = branleur;
-					}
-				});
-
-				if(branlos !== undefined) {
-					console.log(tools.generateDate() + "User \"" + branlos +  "\" found");
-					if(date.getHours() == randomHourPoints) {
-						replyMsg += "Petit.e chanceux.se, c'est l'heure des 3 points\n";
-						ptsWon = 3;
-					} else {
-						ptsWon = 1;
-					}
-					
-					if(message.content.toUpperCase().startsWith("-NEZ <@") || message.content.toUpperCase().startsWith("-NOSE <@")) {
-						if(branlos.pts >= 1) {
-							branlos.pts = branlos.pts - ptsWon;
-							replyMsg += "Cheh " + branlos.name + " Tu as perdu un point, tu as donc " + branlos.pts + " points(s)";
-						} else {
-							branlos.pts = branlos.pts + 2;
-							replyMsg += "Le.a boug a voulu t'enlever un point alors que tu n'en avais déjà plus, abusé non ? pour la peine " + branlos.name + " je t'en donne 2, tu as " + branlos.pts + " points";
-						}
-					} else {
-						branlos.pts = branlos.pts + ptsWon;
-						replyMsg += "Bravo " + branlos.name + " ! Tu as été le.a premier.e à dire \"nez\" au bon moment, tu as " + branlos.pts + " point(s)";
-					}
-
+				console.log(tools.generateDate() + "User \"" + branlos +  "\" found");
+				if(date.getHours() == randomHourPoints) {
+					replyMsg += "Petit.e chanceux.se, c'est l'heure des 3 points\n";
+					ptsWon = 3;
 				} else {
-					console.log(tools.generateDate() + "User not found");
-					branlos = {id: userGettingPoint.id, name: userGettingPoint.username, pts: 1};
-					guild.branleurs.push(branlos);
-					console.log(tools.generateDate() + "User " + branlos + " created");
+					ptsWon = 1;
+				}
+				
+				if(messageContent.startsWith("-NEZ <@") || messageContent.startsWith("-NOSE <@")) {
+					if(branlos.pts - ptsWon >= 1) {
+						branlos.pts = branlos.pts - ptsWon;
+						replyMsg += "Cheh " + branlos.name + " Tu as perdu un point, tu as donc " + branlos.pts + " points(s)";
+					} else {
+						branlos.pts = branlos.pts + 2;
+						replyMsg += "Le.a boug a voulu t'enlever un point alors que tu n'en avais déjà plus, abusé non ? pour la peine " + branlos.name + " je t'en donne 2, tu as " + branlos.pts + " points";
+					}
+				} else {
+					branlos.pts = branlos.pts + ptsWon;
 					replyMsg += "Bravo " + branlos.name + " ! Tu as été le.a premier.e à dire \"nez\" au bon moment, tu as " + branlos.pts + " point(s)";
 				}
 
