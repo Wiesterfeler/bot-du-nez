@@ -17,7 +17,7 @@ module.exports = {
 			console.log(date.getDay() + "/" + date.getMonth() + "/" + date.getFullYear() + " - " + date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds() + ": " + "User \"" + branlos +  "\" found");
 		} else {
 			console.log(date.getDay() + "/" + date.getMonth() + "/" + date.getFullYear() + " - " + date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds() + ": " + "User not found");
-			branlos = {id: branlos.id, name: branlos.username, pts: 0};
+			branlos = {id: message.author.id, name: message.author.username, pts: 0};
 			guild.branleurs.push(branlos);
 			console.log(date.getDay() + "/" + date.getMonth() + "/" + date.getFullYear() + " - " + date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds() + ": " + "User " + branlos + " created");
 		}
