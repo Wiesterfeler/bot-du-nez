@@ -113,8 +113,9 @@ client.on('messageCreate', message => {
 	}
 
 	if(messageContent.includes(wordToBeFound)) {
+		console
 		if(guild.wordFound !== false) {
-			branlos = tools.findBranlos();
+			branlos = tools.findBranlos(message, guild);
 			guild.wordFound = true;
 			branlos.pts = branlos.pts + 5;
 			replyMsg += "Bravo " + branlos.name + " ! Tu as été le.a premier.e à trouver le mot secret \"" + wordToBeFound + "\", tu as " + branlos.pts + " point(s)";
@@ -139,7 +140,7 @@ client.on('messageCreate', message => {
 					console.log(tools.generateDate() + "User \"" + branlos +  "\" found");
 					replyMsg += "C'est l'heure de la personne random\n";
 				} else {
-					branlos = tools.findBranlos();
+					branlos = tools.findBranlos(message, guild);
 				}
 
 				if(date.getHours() == randomHourPoints) {

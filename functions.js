@@ -6,7 +6,7 @@ module.exports = {
 	getRandomInt: function(max) {
 		return Math.floor(Math.random() * max);
 	},
-	findBranlos: function() {
+	findBranlos: function(message, guild) {
 		let branlos = undefined;
 
 		if (message.mentions.users.size > 0) {
