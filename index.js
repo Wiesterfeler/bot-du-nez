@@ -3,13 +3,14 @@ const schedule = require('node-schedule');
 const { Client, Intents } = require('discord.js');
 const { token } = require('./config.json');
 const tools = require('./functions.js');
+const readline = require('readline');
 
 // Create a new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
-	console.log(tools.generateDate() + "Ready\n");
+	console.log(tools.generateDate() + "\nReady\n");
 });
 
 client.login(token);
@@ -95,6 +96,14 @@ client.on('messageCreate', message => {
 		message.reply("MATTHIEU EST DE RETOUR OUIII");
 	}
 
+	if(message.content.toLowerCase() === "matthieu n'est pas encore revenu mais revient dimanche" || (message.content.toLowerCase() === "je suis pas encore revenu mais je reviens dimanche" && message.author.id == 303274212091625472) || (message.content.toLowerCase() === "je ne suis pas encore revenu mais je reviens dimanche" && message.author.id == 303274212091625472)) {
+		message.reply("YOUHOU MATTHIEU N'EST PAS ENCORE REVENU MAIS IL REVIENT DIMANCHE YOUPII");
+	}
+
+	if(message.content.toLowerCase() === "matthieu c'est dimanche tu es censé être revenu") {
+		message.reply("Il abuse j'ai pas raison la miff ?");
+	}
+
 	if(message.content.toUpperCase() === "NEZ" || message.content.toUpperCase().startsWith("NEZ <@") || message.content.toUpperCase() === "NOSE" || message.content.toUpperCase().startsWith("-NEZ <@") || message.content.toUpperCase().startsWith("NOSE <@") || message.content.toUpperCase().startsWith("-NOSE <@")) {
 		if(date.getHours() === date.getMinutes() || date.getHours() == reverseMinutes || date.getMinutes() == reverseHours) {
 			if(date.getMinutes() !== guild.lastMinuteWon) {
@@ -131,7 +140,7 @@ client.on('messageCreate', message => {
 				});
 
 				if(branlos !== undefined) {
-					console.log(tools.generateDate() + "User \"" + branlos +  "\" found\n");
+					console.log(tools.generateDate() + "User \"" + branlos +  "\" found");
 					if(date.getHours() == randomHourPoints) {
 						replyMsg += "Petit.e chanceux.se, c'est l'heure des 3 points\n";
 						ptsWon = 3;
@@ -153,10 +162,10 @@ client.on('messageCreate', message => {
 					}
 
 				} else {
-					console.log(tools.generateDate() + "User not found\n");
+					console.log(tools.generateDate() + "User not found");
 					branlos = {id: userGettingPoint.id, name: userGettingPoint.username, pts: 1};
 					guild.branleurs.push(branlos);
-					console.log(tools.generateDate() + "User " + branlos + " created\n");
+					console.log(tools.generateDate() + "User " + branlos + " created");
 					replyMsg += "Bravo " + branlos.name + " ! Tu as été le.a premier.e à dire \"nez\" au bon moment, tu as " + branlos.pts + " point(s)";
 				}
 
