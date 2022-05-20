@@ -24,5 +24,29 @@ module.exports = {
 			return "Personne n'est dans le classement";
 
 		return standings;
+	},
+	setWord: function(readline) {
+		let rl = readline.createInterface({
+			input: fs.createReadStream('words.txt')
+		});
+
+		let nbLine = 0;
+		let lineWord = tools.getRandomInt(257);
+		rl.on('line', (line) => {
+				if (nbLine++ === lineWord-1) {
+						let wordToBeFound = line;
+						rl.close();
+				}
+		});
+
+		rl.on('close', () => {
+				console.log("word: " + wordToBeFound);
+				readline.moveCursor(0, 0);
+				rl.removeAllListeners();
+		});
+
+		console.log("Word set");
+
+		return wordToBeFound.toUpperCase();
 	}
 };
