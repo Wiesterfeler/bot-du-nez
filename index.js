@@ -85,6 +85,8 @@ client.on('messageCreate', message => {
 		guilds.push(guild);
 		fs.writeFileSync('branleurs.json', JSON.stringify(guilds, null, 4));
 		console.log(tools.generateDate() + "Guilds serialized");
+	} else {
+		console.log(tools.generateDate() + "Guild found");
 	}
 
 	if(messageContent === "NEZ RESULTATS") {
@@ -113,7 +115,6 @@ client.on('messageCreate', message => {
 	}
 
 	if(messageContent.includes(wordToBeFound)) {
-		console
 		if(guild.wordFound !== false) {
 			branlos = tools.findBranlos(message, guild);
 			guild.wordFound = true;
