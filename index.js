@@ -77,7 +77,7 @@ client.on('messageCreate', message => {
 	replyMsg = "";
 	messageContent = message.content.toUpperCase();
 
-	guild = guilds.find(guild => guild.id = message.guild.id);
+	guild = guilds.find(guild => guild.id === message.guild.id);
 	
 	if (guild === undefined){
 		guild = {id: message.guild.id, branleurs: [], alreadyWon: false, alreadyWonMessagesIndex: 0, lastMinutesWon: (date.getHours() - 1), wordFound: false};
