@@ -123,7 +123,11 @@ client.on('messageCreate', message => {
 			
 			newData = JSON.stringify(guilds, null, 4);
 			fs.writeFileSync('branleurs.json', newData);
+		} else {
+			replyMsg += "Désolé " + branlos.name + " ! le mot\"" + wordToBeFound + "\", a déjà été trouvé...";
 		}
+
+		message.reply(replyMsg);
 	}
 
 	if(messageContent.includes("NEZ") || messageContent.includes("NOSE")) {
