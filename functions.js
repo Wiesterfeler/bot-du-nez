@@ -26,7 +26,7 @@ module.exports = {
 	},
 	getNewWord: function(fs) {
 		
-		let words = fs.readFileSync('words.txt').split('\n');
+		let words = fs.readFileSync('words.txt').toString().split('\n');
 
 		let nbLine = 0;
 		let lineWord =  Math.floor(Math.random() * 600);
