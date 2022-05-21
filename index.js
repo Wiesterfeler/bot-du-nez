@@ -1,10 +1,8 @@
 const fs = require('fs');
-const events = require('events');
 const schedule = require('node-schedule');
 const { Client, Intents } = require('discord.js');
 const { token } = require('./config.json');
 const tools = require('./functions.js');
-const readline = require('readline');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
@@ -21,7 +19,6 @@ let branlos = undefined;
 let date;
 let reverseHours;
 let reverseMinutes;
-let userGettingPoint = undefined;
 let lastMinutesWon = new Date().getMinutes();
 let notCorrectHourMessages = [
 	"IL EST PAS L'HEURE ABRUTI",
@@ -45,13 +42,13 @@ let replyMsg = "";
 let randomHourPoints = tools.getRandomInt(24);
 let randomHourRandomPlayer = tools.getRandomInt(24);
 let ptsWon = 1;
-let wordToBeFound = tools.setWord(readline, fs, events);
+let wordToBeFound = tools.getNewWord(fs);
 
 const jobRandomHours = schedule.scheduleJob('0 0 0 * * *', function() {
 	randomHourPoints = tools.getRandomInt(24);
 	randomHourRandomPlayer = tools.getRandomInt(24);
 	console.log(tools.generateDate() + "Random numbers reset");
-	wordToBeFound = tools.setWord(readline, fs, events);
+	wordToBeFound = tools.setWord(fs);
 	guilds = JSON.parse(fs.readFileSync('branleurs.json'));
 	guilds.forEach(guild => {
 		guild.wordFound = false;
