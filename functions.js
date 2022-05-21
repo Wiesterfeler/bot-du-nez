@@ -24,29 +24,28 @@ module.exports = {
 
 		return branlos;
 	},
-	setWord: function(readline, fs) {
+	setWord: async function(readline, fs) {
 		let rl = readline.createInterface({
 			input: fs.createReadStream('words.txt')
 		});
 
 		let nbLine = 0;
 		let lineWord =  Math.floor(Math.random() * 600);
+		let wordToBeFound = undefined;
 
 		rl.on('line', (line) => {
 				if (nbLine++ === lineWord-1) {
+						wordToBeFound = line;
 						rl.close();
-
-						console.log("Word set");
-						console.log("word: " + line);
-
-						return line;
 				}
 		});
 
-		rl.on('close', () => {
-				readline.moveCursor(0, 0);
-				rl.removeAllListeners();
-		});
+		await events.once(rl, 'close');
+
+		console.log("Word set");
+		console.log("word: " + wordToBeFound);
+
+		return wordToBeFound;
 	},
 	sortBranleurs: function(guilds, guild) {
 		branleurs = guilds.find(branleur => branleur.id === guild.id).branleurs;
