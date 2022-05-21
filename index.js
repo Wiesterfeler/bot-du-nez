@@ -151,7 +151,7 @@ client.on('messageCreate', message => {
 		return;
 	}
 
-	if (messageContent.startsWith("NEZ ADMIN DONATION <@") && message.author.id === 182171696004857866) {
+	if (messageContent.startsWith("NEZ ADMIN DONATION <@") && message.author.id == 182171696004857866) {
 		if (message.mentions.users.size > 0 && Number.isInteger(Number.parseInt(messageContent.split(' ').at(4)))) {
 			branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0).id);
 
