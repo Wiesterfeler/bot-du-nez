@@ -126,9 +126,11 @@ client.on('messageCreate', message => {
 	if (messageContent.startsWith("NEZ DONATION <@")) {
 		if (message.mentions.users.size > 0) {
 			branlos = tools.findBranlos(message, guild);
+			donor = guild.branleurs.find(donor => donor.id === message.author.id);
 			if (Number.isInteger(Number.parseInt(messageContent.split(' ').at(3)))) {
-				if(tools.findBranlos(message, guild).pts - messageContent.split(' ').at(3) >= 0) {
-					branlos.pts += tools.findBranlos(message, guild).pts;
+				if(donor.pts - messageContent.split(' ').at(3) >= 0) {
+					branlos.pts += messageContent.split(' ').at(3);
+					donor.pts += messageContent.split(' ').at(3);
 
 					newData = JSON.stringify(guilds, null, 4);
 					fs.writeFileSync('branleurs.json', newData);
