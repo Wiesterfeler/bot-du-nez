@@ -123,11 +123,10 @@ client.on('messageCreate', message => {
 		}
 	}
 
-	if (messageContent.startsWith("NEZ DONNATION <@")) {
+	if (messageContent.startsWith("NEZ DONATION <@")) {
 		if (message.mentions.users.size > 0) {
 			branlos = tools.findBranlos(message, guild);
-			
-			if (Number.isInteger(messageContent.split(' ').at(3))) {
+			if (Number.isInteger(Number.parseInt(messageContent.split(' ').at(3)))) {
 				if(tools.findBranlos(message, guild).pts - messageContent.split(' ').at(3) >= 0) {
 					branlos.pts += tools.findBranlos(message, guild).pts;
 
