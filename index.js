@@ -127,7 +127,7 @@ client.on('messageCreate', message => {
 		if (message.mentions.users.size > 0) {
 			branlos = tools.findBranlos(message, guild);
 			
-			if (messageContent.split(' ').at(3).isInteger()) {
+			if (Number.isInteger(messageContent.split(' ').at(3))) {
 				if(tools.findBranlos(message, guild).pts - messageContent.split(' ').at(3) >= 0) {
 					branlos.pts += tools.findBranlos(message, guild).pts;
 
