@@ -151,6 +151,26 @@ client.on('messageCreate', message => {
 		return;
 	}
 
+	if (messageContent.startsWith("NEZ ADMIN DONATION <@") && message.author.id === 182171696004857866) {
+		if (message.mentions.users.size > 0 && Number.isInteger(Number.parseInt(messageContent.split(' ').at(3)))) {
+			branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0).id);
+
+			if (branlos === undefined) {
+				branlos = {id: message.mentions.users.at(0).id, name: message.mentions.users.at(0).username, pts: 0};
+				guild.branleurs.push(branlos);
+			}
+
+			branlos.pts += Number.parseInt(messageContent.split(' ').at(3));
+
+			newData = JSON.stringify(guilds, null, 4);
+			fs.writeFileSync('branleurs.json', newData);
+
+			message.reply(branlos.name + " a eu " + Number.parseInt(messageContent.split(' ').at(3)) + " points, tu as donc " + branlos.pts + " point(s)");
+		}
+
+		return;
+	}
+
 	if (messageContent.includes("NEZ") || messageContent.includes("NOSE")) {
 		if(date.getHours() === date.getMinutes() || date.getHours() == reverseMinutes || date.getMinutes() == reverseHours) {
 			if(date.getMinutes() !== guild.lastMinuteWon) {
