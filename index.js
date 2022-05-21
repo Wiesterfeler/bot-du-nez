@@ -124,23 +124,25 @@ client.on('messageCreate', message => {
 	}
 
 	if (messageContent.startsWith("NEZ DONATION <@")) {
-		if (message.mentions.users.size > 0) {
+		if (message.mentions.users.size > 0 && Number.isInteger(Number.parseInt(messageContent.split(' ').at(3)))) {
 			branlos = tools.findBranlos(message, guild);
 			donor = guild.branleurs.find(donor => donor.id === message.author.id);
-			if (Number.isInteger(Number.parseInt(messageContent.split(' ').at(3)))) {
-				if(donor.pts - messageContent.split(' ').at(3) >= 0) {
-					branlos.pts += messageContent.split(' ').at(3);
-					donor.pts += messageContent.split(' ').at(3);
+			if(donor.pts - messageContent.split(' ').at(3) >= 0) {
+				branlos.pts += messageContent.split(' ').at(3);
+				donor.pts += messageContent.split(' ').at(3);
 
-					newData = JSON.stringify(guilds, null, 4);
-					fs.writeFileSync('branleurs.json', newData);
+				newData = JSON.stringify(guilds, null, 4);
+				fs.writeFileSync('branleurs.json', newData);
 
-					message.reply("YOU'RE SO CHARITABLE YOU GAVE " + messageContent.split(' ').at(3) + " points to " + branlos.name);
-				}
+				message.reply("YOU'RE SO CHARITABLE YOU GAVE " + messageContent.split(' ').at(3) + " points to " + branlos.name);
 
-				message.reply("Tu ne peux pas donner plus que ce que tu as !");
+				return;
 			}
+
+			message.reply("Tu ne peux pas donner plus que ce que tu as !");
 		}
+
+		return;
 	}
 
 	if (messageContent.includes("NEZ") || messageContent.includes("NOSE")) {
