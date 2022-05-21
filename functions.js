@@ -39,6 +39,7 @@ module.exports = {
 						rl.close();
 
 						console.log("Word set");
+						console.log("word: " + wordToBeFound);
 				}
 		});
 
