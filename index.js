@@ -131,14 +131,14 @@ client.on('messageCreate', message => {
 			}
 			guild.branleurs.push(branlos);
 			let donor = guild.branleurs.find(donor => donor.id === message.author.id);
-			if(donor.pts - messageContent.split(' ').at(3) >= 0) {
-				branlos.pts += messageContent.split(' ').at(3);
-				donor.pts += messageContent.split(' ').at(3);
+			if(donor.pts - Number.parseInt(messageContent.split(' ').at(3)) >= 0) {
+				branlos.pts += Number.parseInt(messageContent.split(' ').at(3));
+				donor.pts += Number.parseInt(messageContent.split(' ').at(3));
 
 				newData = JSON.stringify(guilds, null, 4);
 				fs.writeFileSync('branleurs.json', newData);
 
-				message.reply("YOU'RE SO CHARITABLE YOU GAVE " + messageContent.split(' ').at(3) + " points to " + branlos.name);
+				message.reply("YOU'RE SO CHARITABLE YOU GAVE " + Number.parseInt(messageContent.split(' ').at(3)) + " points to " + branlos.name);
 
 				return;
 			}
