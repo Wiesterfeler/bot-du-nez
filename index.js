@@ -126,6 +126,19 @@ client.on('messageCreate', message => {
 	if (messageContent.startsWith("NEZ DONNATION <@")) {
 		if (message.mentions.users.size > 0) {
 			branlos = tools.findBranlos(message, guild);
+			
+			if (messageContent.split(' ').at(4).isInteger()) {
+				if(tools.findBranlos(message, guild).pts - messageContent.split(' ').at(4) >= 0) {
+					branlos.pts += tools.findBranlos(message, guild).pts;
+
+					newData = JSON.stringify(guilds, null, 4);
+					fs.writeFileSync('branleurs.json', newData);
+
+					message.reply("YOU'RE SO CHARITABLE YOU GAVE " + messageContent.split(' ').at(4) + " points to " + branlos.name);
+				}
+
+				message.reply("Tu ne peux pas donner plus que ce que tu as !");
+			}
 		}
 	}
 
