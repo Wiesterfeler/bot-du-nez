@@ -24,7 +24,7 @@ module.exports = {
 
 		return branlos;
 	},
-	setWord: async function(readline, fs) {
+	setWord: async function(readline, fs, events) {
 		let rl = readline.createInterface({
 			input: fs.createReadStream('words.txt')
 		});
