@@ -43,6 +43,7 @@ let randomHourPoints = tools.getRandomInt(24);
 let randomHourRandomPlayer = tools.getRandomInt(24);
 let ptsWon = 1;
 let wordToBeFound = tools.getNewWord(fs);
+console.log(wordToBeFound);
 
 const jobRandomHours = schedule.scheduleJob('0 0 0 * * *', function() {
 	randomHourPoints = tools.getRandomInt(24);

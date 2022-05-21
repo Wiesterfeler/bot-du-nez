@@ -34,9 +34,9 @@ module.exports = {
 		words.forEach((line) => {
 				if (nbLine++ === lineWord-1) {
 					console.log("Word set");
-					console.log("word: " + line);
+					console.log("Word: " + line);
 
-					return line;
+					return "test";
 				}
 		});
 	},
