@@ -7,10 +7,10 @@ module.exports = {
 		return Math.floor(Math.random() * max);
 	},
 	findBranlos: function(message, guild) {
-		let branlos = undefined;
+		let branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0).id);
 
 		if (message.mentions.users.size > 0) {
-			if((branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0).id)) === undefined) {
+			if(branlos === undefined) {
 				branlos = message.mentions.users.at(0);
 			}
 			
