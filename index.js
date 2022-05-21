@@ -75,7 +75,7 @@ client.on('messageCreate', message => {
 	messageContent = message.content.toUpperCase();
 
 	guild = guilds.find(guild => guild.id === message.guild.id);
-	
+
 	if (guild === undefined){
 		guild = {id: message.guild.id, branleurs: [], alreadyWon: false, alreadyWonMessagesIndex: 0, lastMinutesWon: (date.getHours() - 1), wordFound: false};
 		console.log("guild :" + guild.name + " created");
@@ -115,10 +115,10 @@ client.on('messageCreate', message => {
 			guild.wordFound = true;
 			branlos.pts = branlos.pts + 5;
 			replyMsg += "Bravo " + branlos.name + " ! Tu as été le.a premier.e à trouver le mot secret \"" + wordToBeFound + "\", tu as " + branlos.pts + " point(s)";
-			
+
 			newData = JSON.stringify(guilds, null, 4);
 			fs.writeFileSync('branleurs.json', newData);
-			
+
 			message.reply(replyMsg);
 		}
 	}
@@ -127,14 +127,14 @@ client.on('messageCreate', message => {
 		if (message.mentions.users.size > 0) {
 			branlos = tools.findBranlos(message, guild);
 			
-			if (messageContent.split(' ').at(4).isInteger()) {
-				if(tools.findBranlos(message, guild).pts - messageContent.split(' ').at(4) >= 0) {
+			if (messageContent.split(' ').at(3).isInteger()) {
+				if(tools.findBranlos(message, guild).pts - messageContent.split(' ').at(3) >= 0) {
 					branlos.pts += tools.findBranlos(message, guild).pts;
 
 					newData = JSON.stringify(guilds, null, 4);
 					fs.writeFileSync('branleurs.json', newData);
 
-					message.reply("YOU'RE SO CHARITABLE YOU GAVE " + messageContent.split(' ').at(4) + " points to " + branlos.name);
+					message.reply("YOU'RE SO CHARITABLE YOU GAVE " + messageContent.split(' ').at(3) + " points to " + branlos.name);
 				}
 
 				message.reply("Tu ne peux pas donner plus que ce que tu as !");
