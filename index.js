@@ -132,7 +132,7 @@ client.on('messageCreate', message => {
 			guild.branleurs.push(branlos);
 			let donor = guild.branleurs.find(donor => donor.id === message.author.id);
 			if(donor.pts - Number.parseInt(messageContent.split(' ').at(3)) >= 0) {
-				branlos.pts += Number.parseInt(messageContent.split(' ').at(3));
+				branlos.pts -= Number.parseInt(messageContent.split(' ').at(3));
 				donor.pts += Number.parseInt(messageContent.split(' ').at(3));
 
 				newData = JSON.stringify(guilds, null, 4);
