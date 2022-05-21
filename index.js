@@ -48,7 +48,7 @@ const jobRandomHours = schedule.scheduleJob('0 0 0 * * *', function() {
 	randomHourPoints = tools.getRandomInt(24);
 	randomHourRandomPlayer = tools.getRandomInt(24);
 	console.log(tools.generateDate() + "Random numbers reset");
-	wordToBeFound = tools.setWord(fs);
+	wordToBeFound = tools.getNewWord(fs);
 	guilds = JSON.parse(fs.readFileSync('branleurs.json'));
 	guilds.forEach(guild => {
 		guild.wordFound = false;
@@ -84,32 +84,32 @@ client.on('messageCreate', message => {
 		console.log(tools.generateDate() + "Guilds serialized");
 	}
 
-	if(messageContent === "NEZ RESULTATS") {
+	if (messageContent === "NEZ RESULTATS") {
 		message.reply(tools.sortBranleurs(JSON.parse(fs.readFileSync('branleurs_last_week.json')), guild));
 		return;
 	}
 
-	if(messageContent === "NEZ CLASSEMENT") {
+	if (messageContent === "NEZ CLASSEMENT") {
 		message.reply(tools.sortBranleurs(guilds, guild));
 		return;
 	}
 
-	if(messageContent === "MATTHIEU EST RENTRÉ" || messageContent === "MATTBIEURT EST RENTRÉ" || (messageContent === "JE SUIS RENTRÉ" && message.author.id == 303274212091625472)) {
+	if (messageContent === "MATTHIEU EST RENTRÉ" || messageContent === "MATTBIEURT EST RENTRÉ" || (messageContent === "JE SUIS RENTRÉ" && message.author.id == 303274212091625472)) {
 		message.reply("MATTHIEU EST DE RETOUR OUIII");
 		return;
 	}
 
-	if(messageContent === "MATTHIEU N'EST PAS ENCORE REVENU MAIS REVIENT DIMANCHE" || (messageContent === "JE SUIS PAS ENCORE REVENU MAIS JE REVIENS DIMANCHE" && message.author.id == 303274212091625472) || (messageContent === "JE NE SUIS PAS ENCORE REVENU MAIS JE REVIENS DIMANCHE" && message.author.id == 303274212091625472)) {
+	if (messageContent === "MATTHIEU N'EST PAS ENCORE REVENU MAIS REVIENT DIMANCHE" || (messageContent === "JE SUIS PAS ENCORE REVENU MAIS JE REVIENS DIMANCHE" && message.author.id == 303274212091625472) || (messageContent === "JE NE SUIS PAS ENCORE REVENU MAIS JE REVIENS DIMANCHE" && message.author.id == 303274212091625472)) {
 		message.reply("YOUHOU MATTHIEU N'EST PAS ENCORE REVENU MAIS IL REVIENT DIMANCHE YOUPII");
 		return;
 	}
 
-	if(messageContent === "MATTHIEU C'EST DIMANCHE TU ES CENSÉ ÊTRE REVENU") {
+	if (messageContent === "MATTHIEU C'EST DIMANCHE TU ES CENSÉ ÊTRE REVENU") {
 		message.reply("Il abuse j'ai pas raison la miff ?");
 		return;
 	}
 
-	if(messageContent.includes(wordToBeFound)) {
+	if (messageContent.includes(wordToBeFound)) {
 		if(guild.wordFound === false) {
 			branlos = tools.findBranlos(message, guild);
 			guild.wordFound = true;
@@ -123,7 +123,13 @@ client.on('messageCreate', message => {
 		}
 	}
 
-	if(messageContent.includes("NEZ") || messageContent.includes("NOSE")) {
+	if (messageContent.startsWith("NEZ DONNATION <@")) {
+		if (message.mentions.users.size > 0) {
+			branlos = tools.findBranlos(message, guild);
+		}
+	}
+
+	if (messageContent.includes("NEZ") || messageContent.includes("NOSE")) {
 		if(date.getHours() === date.getMinutes() || date.getHours() == reverseMinutes || date.getMinutes() == reverseHours) {
 			if(date.getMinutes() !== guild.lastMinuteWon) {
 				guild.alreadyWon = false;
