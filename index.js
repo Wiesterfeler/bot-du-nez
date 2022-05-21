@@ -43,7 +43,6 @@ let randomHourPoints = tools.getRandomInt(24);
 let randomHourRandomPlayer = tools.getRandomInt(24);
 let ptsWon = 1;
 let wordToBeFound = tools.getNewWord(fs);
-console.log(wordToBeFound);
 
 const jobRandomHours = schedule.scheduleJob('0 0 0 * * *', function() {
 	randomHourPoints = tools.getRandomInt(24);
@@ -119,11 +118,9 @@ client.on('messageCreate', message => {
 			
 			newData = JSON.stringify(guilds, null, 4);
 			fs.writeFileSync('branleurs.json', newData);
-		} else {
-			replyMsg += "Désolé ! Le mot \"" + wordToBeFound + "\" a déjà été trouvé...";
+			
+			message.reply(replyMsg);
 		}
-
-		message.reply(replyMsg);
 	}
 
 	if(messageContent.includes("NEZ") || messageContent.includes("NOSE")) {

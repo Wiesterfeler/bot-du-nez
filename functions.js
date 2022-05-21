@@ -28,7 +28,7 @@ module.exports = {
 		
 		let words = fs.readFileSync('words.txt').toString().split('\n');
 
-		let lineWord =  Math.floor(Math.random() * 600) - 1;
+		let lineWord =  Math.floor(Math.random() * 451277) - 1;
 
 		return words.find((element, index) => index > lineWord).toUpperCase();
 	},
