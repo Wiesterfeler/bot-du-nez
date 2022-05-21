@@ -31,15 +31,15 @@ module.exports = {
 
 		let nbLine = 0;
 		let lineWord =  Math.floor(Math.random() * 600);
-		let wordToBeFound = undefined;
 
 		rl.on('line', (line) => {
 				if (nbLine++ === lineWord-1) {
-						wordToBeFound = line;
 						rl.close();
 
 						console.log("Word set");
-						console.log("word: " + wordToBeFound);
+						console.log("word: " + line);
+
+						return line;
 				}
 		});
 
@@ -47,10 +47,6 @@ module.exports = {
 				readline.moveCursor(0, 0);
 				rl.removeAllListeners();
 		});
-
-		if(wordToBeFound !== undefined) {
-			return wordToBeFound;
-		}
 	},
 	sortBranleurs: function(guilds, guild) {
 		branleurs = guilds.find(branleur => branleur.id === guild.id).branleurs;

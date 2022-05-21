@@ -44,7 +44,7 @@ let replyMsg = "";
 let randomHourPoints = tools.getRandomInt(24);
 let randomHourRandomPlayer = tools.getRandomInt(24);
 let ptsWon = 1;
-let wordToBeFound = tools.setWord(readline, fs).toUpperCase();
+let wordToBeFound = tools.setWord(readline, fs);
 
 const jobRandomHours = schedule.scheduleJob('0 0 0 * * *', function() {
 	randomHourPoints = tools.getRandomInt(24);
