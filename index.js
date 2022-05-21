@@ -3,21 +3,14 @@ const schedule = require('node-schedule');
 const { Client, Intents } = require('discord.js');
 const { token } = require('./config.json');
 const tools = require('./functions.js');
-const readline = require('readline');
 
-// Create a new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
-// When the client is ready, run this code (only once)
 client.once('ready', () => {
-	console.log(tools.generateDate() + "\nReady\n");
+	console.log(tools.generateDate() + "Ready\n");
 });
 
 client.login(token);
-
-rl = readline.createInterface({
-	input: fs.createReadStream('words.txt')
-});
 
 let data = fs.readFileSync('branleurs.json');
 let guilds = JSON.parse(data);
@@ -26,7 +19,6 @@ let branlos = undefined;
 let date;
 let reverseHours;
 let reverseMinutes;
-let userGettingPoint = undefined;
 let lastMinutesWon = new Date().getMinutes();
 let notCorrectHourMessages = [
 	"IL EST PAS L'HEURE ABRUTI",
@@ -50,35 +42,18 @@ let replyMsg = "";
 let randomHourPoints = tools.getRandomInt(24);
 let randomHourRandomPlayer = tools.getRandomInt(24);
 let ptsWon = 1;
-let nbLine = 0;
-let lineWord = tools.getRandomInt(451277);
-let wordToBeFound = null;
+let wordToBeFound = tools.getNewWord(fs);
 
 const jobRandomHours = schedule.scheduleJob('0 0 0 * * *', function() {
 	randomHourPoints = tools.getRandomInt(24);
 	randomHourRandomPlayer = tools.getRandomInt(24);
 	console.log(tools.generateDate() + "Random numbers reset");
-
-	rl = readline.createInterface({
-        input: fs.createReadStream('words.txt')
+	wordToBeFound = tools.setWord(fs);
+	guilds = JSON.parse(fs.readFileSync('branleurs.json'));
+	guilds.forEach(guild => {
+		guild.wordFound = false;
 	});
-
-	nbLine = 0;
-	lineWord = tools.getRandomInt(257);
-	rl.on('line', (line) => {
-			if (nbLine++ === lineWord-1) {
-					wordToBeFound = line;
-					rl.close();
-			}
-	});
-
-	rl.on('close', () => {
-			console.log("word: " + wordToBeFound);
-			readline.moveCursor(0, 0);
-			rl.removeAllListeners();
-	});
-
-	console.log("Word set");
+	fs.writeFileSync('branleurs.json', JSON.stringify(guilds, null, 4));
 });
 
 const jobResetScores = schedule.scheduleJob('0 0 0 * * 1', function() {
@@ -99,10 +74,10 @@ client.on('messageCreate', message => {
 	replyMsg = "";
 	messageContent = message.content.toUpperCase();
 
-	guild = guilds.find(guild => guild.id = message.guild.id);
+	guild = guilds.find(guild => guild.id === message.guild.id);
 	
 	if (guild === undefined){
-		guild = {id: message.guild.id, branleurs: [], alreadyWon: false, alreadyWonMessagesIndex: 0, lastMinutesWon: (date.getHours() - 1)};
+		guild = {id: message.guild.id, branleurs: [], alreadyWon: false, alreadyWonMessagesIndex: 0, lastMinutesWon: (date.getHours() - 1), wordFound: false};
 		console.log("guild :" + guild.name + " created");
 		guilds.push(guild);
 		fs.writeFileSync('branleurs.json', JSON.stringify(guilds, null, 4));
@@ -134,6 +109,20 @@ client.on('messageCreate', message => {
 		return;
 	}
 
+	if(messageContent.includes(wordToBeFound)) {
+		if(guild.wordFound === false) {
+			branlos = tools.findBranlos(message, guild);
+			guild.wordFound = true;
+			branlos.pts = branlos.pts + 5;
+			replyMsg += "Bravo " + branlos.name + " ! Tu as été le.a premier.e à trouver le mot secret \"" + wordToBeFound + "\", tu as " + branlos.pts + " point(s)";
+			
+			newData = JSON.stringify(guilds, null, 4);
+			fs.writeFileSync('branleurs.json', newData);
+			
+			message.reply(replyMsg);
+		}
+	}
+
 	if(messageContent.includes("NEZ") || messageContent.includes("NOSE")) {
 		if(date.getHours() === date.getMinutes() || date.getHours() == reverseMinutes || date.getMinutes() == reverseHours) {
 			if(date.getMinutes() !== guild.lastMinuteWon) {
@@ -146,24 +135,12 @@ client.on('messageCreate', message => {
 
 				if(date.getHours() == randomHourRandomPlayer && guild.branleurs.length > 0) {
 					branlos = guild.branleurs.at(Math.floor(Math.random() * guild.branleurs.length)-1);
+					console.log(tools.generateDate() + "User \"" + branlos +  "\" found");
 					replyMsg += "C'est l'heure de la personne random\n";
 				} else {
-					if(message.mentions.users.size > 0) {
-						branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0));
-
-						if(branlos === undefined) {
-							branlos = message.mentions.users.at(0);
-						}
-					} else {
-						branlos = message.author;
-						console.log(tools.generateDate() + "User not found");
-						branlos = {id: branlos.id, name: branlos.username, pts: 0};
-						guild.branleurs.push(branlos);
-						console.log(tools.generateDate() + "User " + branlos + " created");
-					}
+					branlos = tools.findBranlos(message, guild);
 				}
 
-				console.log(tools.generateDate() + "User \"" + branlos +  "\" found");
 				if(date.getHours() == randomHourPoints) {
 					replyMsg += "Petit.e chanceux.se, c'est l'heure des 3 points\n";
 					ptsWon = 3;
@@ -171,7 +148,7 @@ client.on('messageCreate', message => {
 					ptsWon = 1;
 				}
 				
-				if(messageContent.startsWith("-NEZ <@") || messageContent.startsWith("-NOSE <@")) {
+				if(messageContent.startsWith("-NEZ") || messageContent.startsWith("-NOSE")) {
 					if(branlos.pts - ptsWon >= 1) {
 						branlos.pts = branlos.pts - ptsWon;
 						replyMsg += "Cheh " + branlos.name + " Tu as perdu un point, tu as donc " + branlos.pts + " points(s)";
@@ -179,7 +156,9 @@ client.on('messageCreate', message => {
 						branlos.pts = branlos.pts + 2;
 						replyMsg += "Le.a boug a voulu t'enlever un point alors que tu n'en avais déjà plus, abusé non ? pour la peine " + branlos.name + " je t'en donne 2, tu as " + branlos.pts + " points";
 					}
-				} else {
+				} 
+				
+				if (messageContent.startsWith("NEZ") || messageContent.startsWith("NOSE")){
 					branlos.pts = branlos.pts + ptsWon;
 					replyMsg += "Bravo " + branlos.name + " ! Tu as été le.a premier.e à dire \"nez\" au bon moment, tu as " + branlos.pts + " point(s)";
 				}
