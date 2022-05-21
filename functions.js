@@ -24,7 +24,7 @@ module.exports = {
 
 		return branlos;
 	},
-	setWord: function(fs) {
+	getNewWord: function(fs) {
 		
 		let words = fs.readFileSync('words.txt').split('\n');
 
