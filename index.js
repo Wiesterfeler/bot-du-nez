@@ -115,7 +115,7 @@ client.on('messageCreate', message => {
 	}
 
 	if(messageContent.includes(wordToBeFound)) {
-		if(guild.wordFound !== false) {
+		if(guild.wordFound === false) {
 			branlos = tools.findBranlos(message, guild);
 			guild.wordFound = true;
 			branlos.pts = branlos.pts + 5;
@@ -124,7 +124,7 @@ client.on('messageCreate', message => {
 			newData = JSON.stringify(guilds, null, 4);
 			fs.writeFileSync('branleurs.json', newData);
 		} else {
-			replyMsg += "Désolé ! le mot\"" + wordToBeFound + "\", a déjà été trouvé...";
+			replyMsg += "Désolé ! Le mot \"" + wordToBeFound + "\" a déjà été trouvé...";
 		}
 
 		message.reply(replyMsg);
