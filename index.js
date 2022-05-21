@@ -152,7 +152,7 @@ client.on('messageCreate', message => {
 	}
 
 	if (messageContent.startsWith("NEZ ADMIN DONATION <@") && message.author.id === 182171696004857866) {
-		if (message.mentions.users.size > 0 && Number.isInteger(Number.parseInt(messageContent.split(' ').at(3)))) {
+		if (message.mentions.users.size > 0 && Number.isInteger(Number.parseInt(messageContent.split(' ').at(4)))) {
 			branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0).id);
 
 			if (branlos === undefined) {
@@ -160,12 +160,12 @@ client.on('messageCreate', message => {
 				guild.branleurs.push(branlos);
 			}
 
-			branlos.pts += Number.parseInt(messageContent.split(' ').at(3));
+			branlos.pts += Number.parseInt(messageContent.split(' ').at(4));
 
 			newData = JSON.stringify(guilds, null, 4);
 			fs.writeFileSync('branleurs.json', newData);
 
-			message.reply(branlos.name + " a eu " + Number.parseInt(messageContent.split(' ').at(3)) + " points, tu as donc " + branlos.pts + " point(s)");
+			message.reply(branlos.name + " a eu " + Number.parseInt(messageContent.split(' ').at(4)) + " points, tu as donc " + branlos.pts + " point(s)");
 		}
 
 		return;
