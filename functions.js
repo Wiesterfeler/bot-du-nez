@@ -10,7 +10,7 @@ module.exports = {
 		let branlos = undefined;
 
 		if (message.mentions.users.size > 0) {
-			if((branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0))) === undefined) {
+			if((branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0).id)) === undefined) {
 				branlos = message.mentions.users.at(0);
 			}
 			
