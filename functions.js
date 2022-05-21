@@ -30,7 +30,7 @@ module.exports = {
 
 		let lineWord =  Math.floor(Math.random() * 600) - 1;
 
-		return words.find((element, index) => index > lineWord);
+		return words.find((element, index) => index > lineWord).toUpperCase();
 	},
 	sortBranleurs: function(guilds, guild) {
 		branleurs = guilds.find(branleur => branleur.id === guild.id).branleurs;
