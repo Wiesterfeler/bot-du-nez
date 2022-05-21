@@ -44,7 +44,7 @@ let replyMsg = "";
 let randomHourPoints = tools.getRandomInt(24);
 let randomHourRandomPlayer = tools.getRandomInt(24);
 let ptsWon = 1;
-let wordToBeFound = tools.setWord(readline, fs);
+let wordToBeFound = tools.setWord(readline, fs).toUpperCase();
 
 const jobRandomHours = schedule.scheduleJob('0 0 0 * * *', function() {
 	randomHourPoints = tools.getRandomInt(24);
@@ -84,8 +84,6 @@ client.on('messageCreate', message => {
 		guilds.push(guild);
 		fs.writeFileSync('branleurs.json', JSON.stringify(guilds, null, 4));
 		console.log(tools.generateDate() + "Guilds serialized");
-	} else {
-		console.log(tools.generateDate() + "Guild found");
 	}
 
 	if(messageContent === "NEZ RESULTATS") {

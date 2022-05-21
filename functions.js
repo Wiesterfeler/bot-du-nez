@@ -49,7 +49,7 @@ module.exports = {
 		});
 
 		if(wordToBeFound !== undefined) {
-			return wordToBeFound.toUpperCase();
+			return wordToBeFound;
 		}
 	},
 	sortBranleurs: function(guilds, guild) {
