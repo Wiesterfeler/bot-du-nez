@@ -238,6 +238,8 @@ client.on('messageCreate', message => {
 			newData = JSON.stringify(guilds, null, 4);
 			fs.writeFileSync('branleurs.json', newData);
 
+			message.reply(replyMsg);
+
 			return;
 		}
 
