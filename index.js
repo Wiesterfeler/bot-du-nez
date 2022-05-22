@@ -181,6 +181,8 @@ client.on('messageCreate', message => {
 					newData = JSON.stringify(guilds, null, 4);
 					fs.writeFileSync('branleurs.json', newData);
 					
+					message.reply("Missile predator chargé, il a désormais " + guild.predator.charge + " charge(s)");
+					
 					return;
 				}
 
@@ -195,7 +197,7 @@ client.on('messageCreate', message => {
 				return;
 			}
 
-			if(date.getDay == 0) {
+			if(date.getDay() == 0) {
 				if (guild.predator.charge < 2) {
 					guild.branleurs.forEach(branlos => function() {
 						branlos.pts -= Math.ceil(branlos.pts - (branlos.pts * ((20 + (10 * tools.getRandomInt(2))) / 100)));
