@@ -197,7 +197,7 @@ client.on('messageCreate', message => {
 				return;
 			}
 
-			if(date.getDay() == 0) {
+			if(date.getDay() == 0 && date.getMinutes() == 23) {
 				if (guild.predator.charge < 2) {
 					guild.branleurs.forEach(branlos => {
 						branlos.pts -= Math.ceil(branlos.pts - (branlos.pts * ((20 + (10 * tools.getRandomInt(2))) / 100)));
