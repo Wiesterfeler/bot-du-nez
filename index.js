@@ -3,6 +3,7 @@ const schedule = require('node-schedule');
 const { Client, Intents } = require('discord.js');
 const { token } = require('./config.json');
 const tools = require('./functions.js');
+const { getRandomInt } = require('./functions.js');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
@@ -77,7 +78,7 @@ client.on('messageCreate', message => {
 	guild = guilds.find(guild => guild.id === message.guild.id);
 
 	if (guild === undefined){
-		guild = {id: message.guild.id, branleurs: [], alreadyWon: false, alreadyWonMessagesIndex: 0, lastMinutesWon: (date.getHours() - 1), wordFound: false};
+		guild = {id: message.guild.id, branleurs: [], alreadyWon: false, alreadyWonMessagesIndex: 0, lastMinutesWon: (date.getHours() - 1), wordFound: false, predator: [{charge: 0}, {used: false}]};
 		console.log("guild :" + guild.name + " created");
 		guilds.push(guild);
 		fs.writeFileSync('branleurs.json', JSON.stringify(guilds, null, 4));
@@ -167,6 +168,78 @@ client.on('messageCreate', message => {
 
 			message.reply(branlos.name + " a eu " + Number.parseInt(messageContent.split(' ').at(4)) + " points, tu as donc " + branlos.pts + " point(s)");
 		}
+
+		return;
+	}
+
+	if(messageContent.startsWith("MISSILE PREDATOR") && (message.author.id == 382785159998472192 || message.author.id == 149141535705792512 || message.author.id == 182171696004857866)) {
+		if(date.getHours() === date.getMinutes() || true) {
+			if (messageContent.startsWith("MISSILE PREDATOR CHARGEMENT")) {
+				if (guild.predator.charge < 2) {
+					guild.predator.charge++;
+
+					newData = JSON.stringify(guilds, null, 4);
+					fs.writeFileSync('branleurs.json', newData);
+					
+					return;
+				}
+
+				message.reply("Missile predator déjà chargé à fond");
+
+				return;
+			}
+
+			if(guild.predator.used) {
+				message.reply("Le missile a déjà été utilisé, il faudrait attendre lundi à 00h");
+
+				return;
+			}
+
+			if(date.getDay == 0) {
+				if (guild.predator.charge < 2) {
+					guild.branleurs.forEach(branlos => function() {
+						branlos.pts -= Math.ceil(branlos.pts - (branlos.pts * ((20 + (10 * tools.getRandomInt(2))) / 100)));
+					});
+					
+					replyMsg = "BOOM tous le monde a perdu des points ! Entre 20% et 40% de vos points sont sûrement perdus !";
+				} else {
+					guild.branleurs.forEach(branlos => function() {
+						branlos.pts = 0;
+					});
+					
+					replyMsg = "BOOM plus personne n'a de point ! Tout se jouera à 23h32...";
+				}
+			} else {
+				if (message.mentions.users.size > 0) {
+					branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0).id);
+			
+					if (branlos === undefined) {
+						message.reply("La cible n'a pas été trouvée");
+			
+						return;
+					}
+	
+					branlos.pts -= Math.ceil(branlos.pts - (branlos.pts * ((50 + (10 * guild.predator.charge)) / 100)));
+					replyMsg = "BOOM " + branlos.name + " a perdu la moitié de ses points !";
+				} else {
+					guild.branleurs.forEach(branlos => function() {
+						branlos.pts -= Math.ceil(branlos.pts - (branlos.pts * ((20 + (10 * guild.predator.charge)) / 100)));
+					});
+					
+					replyMsg = "BOOM tout le monde a perdu 20% de ses points !";
+				}
+			}
+
+			guild.predator.charge = 0;
+			guild.predator.used = true;
+			
+			newData = JSON.stringify(guilds, null, 4);
+			fs.writeFileSync('branleurs.json', newData);
+
+			return;
+		}
+
+		message.reply("IL N'EST PAS L'HEURE ESPECE DE CON");
 
 		return;
 	}
