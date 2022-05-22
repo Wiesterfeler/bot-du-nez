@@ -134,6 +134,12 @@ client.on('messageCreate', message => {
 
 			let donor = guild.branleurs.find(donor => donor.id === message.author.id);
 
+			if (undefined == donor) {
+				message.reply("TU N'ES MEME PAS DANS LE CLASSEMENT ANDOUILLE");
+				
+				return;
+			}
+
 			if(donor.pts - Number.parseInt(messageContent.split(' ').at(3)) >= 0) {
 				branlos.pts += Number.parseInt(messageContent.split(' ').at(3));
 				donor.pts -= Number.parseInt(messageContent.split(' ').at(3));
