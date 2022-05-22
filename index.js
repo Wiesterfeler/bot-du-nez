@@ -248,7 +248,7 @@ client.on('messageCreate', message => {
 		return;
 	}
 
-	if (messageContent.includes("NEZ") || messageContent.includes("NOSE")) {
+	if (messageContent.startsWith("NEZ") || messageContent.startsWith("NOSE") || messageContent.startsWith("-NEZ") || messageContent.startsWith("-NOSE")) {
 		if(date.getHours() === date.getMinutes() || date.getHours() == reverseMinutes || date.getMinutes() == reverseHours) {
 			if(date.getMinutes() !== guild.lastMinuteWon) {
 				guild.alreadyWon = false;
