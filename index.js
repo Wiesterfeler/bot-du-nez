@@ -263,7 +263,11 @@ client.on('messageCreate', message => {
 					console.log(tools.generateDate() + "User \"" + branlos +  "\" found");
 					replyMsg += "C'est l'heure de la personne random\n";
 				} else {
-					branlos = tools.findBranlos(message, guild);
+					if (message.mentions.users.size > 0) {
+						branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0).id);
+					} else {
+						branlos = guild.branleurs.find(branleur => branleur.id === message.author.id);
+					}
 				}
 
 				if(date.getHours() == randomHourPoints) {
