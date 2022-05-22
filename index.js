@@ -172,8 +172,8 @@ client.on('messageCreate', message => {
 		return;
 	}
 
-	if(messageContent.startsWith("MISSILE PREDATOR") && (message.author.id == 382785159998472192 || message.author.id == 149141535705792512 || message.author.id == 182171696004857866)) {
-		if(date.getHours() === date.getMinutes() || true) {
+	if(messageContent.startsWith("MISSILE PREDATOR") && (message.author.id == 382785159998472192 || message.author.id == 149141535705792512)) {
+		if(date.getHours() === date.getMinutes()) {
 			if (messageContent.startsWith("MISSILE PREDATOR CHARGEMENT")) {
 				if (guild.predator.charge < 2) {
 					guild.predator.charge++;
@@ -225,9 +225,7 @@ client.on('messageCreate', message => {
 					replyMsg = "BOOM " + branlos.name + " a perdu la beaucoup de ses points !";
 				} else {
 					guild.branleurs.forEach(branlos => {
-						console.log(branlos.pts);
 						branlos.pts -= Math.ceil(branlos.pts - (branlos.pts * ((20 + (10 * guild.predator.charge)) / 100)));
-						console.log(branlos.pts);
 					});
 					
 					replyMsg = "BOOM tout le monde a perdu 20% de ses points !";
