@@ -199,13 +199,13 @@ client.on('messageCreate', message => {
 
 			if(date.getDay() == 0) {
 				if (guild.predator.charge < 2) {
-					guild.branleurs.forEach(branlos => function() {
+					guild.branleurs.forEach(branlos => {
 						branlos.pts -= Math.ceil(branlos.pts - (branlos.pts * ((20 + (10 * tools.getRandomInt(2))) / 100)));
 					});
 					
 					replyMsg = "BOOM tous le monde a perdu des points ! Entre 20% et 40% de vos points sont sûrement perdus !";
 				} else {
-					guild.branleurs.forEach(branlos => function() {
+					guild.branleurs.forEach(branlos => {
 						branlos.pts = 0;
 					});
 					
@@ -224,7 +224,7 @@ client.on('messageCreate', message => {
 					branlos.pts -= Math.ceil(branlos.pts - (branlos.pts * ((50 + (10 * guild.predator.charge)) / 100)));
 					replyMsg = "BOOM " + branlos.name + " a perdu la moitié de ses points !";
 				} else {
-					guild.branleurs.forEach(branlos => function() {
+					guild.branleurs.forEach(branlos => {
 						console.log(branlos.pts);
 						branlos.pts -= Math.ceil(branlos.pts - (branlos.pts * ((20 + (10 * guild.predator.charge)) / 100)));
 						console.log(branlos.pts);
