@@ -140,16 +140,18 @@ client.on('messageCreate', message => {
 				return;
 			}
 
-			if(donor.pts - Number.parseInt(messageContent.split(' ').at(3)) >= 0) {
-				branlos.pts += Number.parseInt(messageContent.split(' ').at(3));
-				donor.pts -= Number.parseInt(messageContent.split(' ').at(3));
-
-				newData = JSON.stringify(guilds, null, 4);
-				fs.writeFileSync('branleurs.json', newData);
-
-				message.reply("YOU'RE SO CHARITABLE YOU GAVE " + Number.parseInt(messageContent.split(' ').at(3)) + " points to " + branlos.name);
-
-				return;
+			if(Number.parseInt(messageContent.split(' ').at(3) >= 0)) {
+				if(donor.pts - Number.parseInt(messageContent.split(' ').at(3)) >= 0) {
+					branlos.pts += Number.parseInt(messageContent.split(' ').at(3));
+					donor.pts -= Number.parseInt(messageContent.split(' ').at(3));
+	
+					newData = JSON.stringify(guilds, null, 4);
+					fs.writeFileSync('branleurs.json', newData);
+	
+					message.reply("YOU'RE SO CHARITABLE YOU GAVE " + Number.parseInt(messageContent.split(' ').at(3)) + " points to " + branlos.name);
+	
+					return;
+				}
 			}
 
 			message.reply("Tu ne peux pas donner plus que ce que tu as !");
