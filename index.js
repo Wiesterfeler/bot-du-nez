@@ -225,7 +225,9 @@ client.on('messageCreate', message => {
 					replyMsg = "BOOM " + branlos.name + " a perdu la moitié de ses points !";
 				} else {
 					guild.branleurs.forEach(branlos => function() {
+						console.log(branlos.pts);
 						branlos.pts -= Math.ceil(branlos.pts - (branlos.pts * ((20 + (10 * guild.predator.charge)) / 100)));
+						console.log(branlos.pts);
 					});
 					
 					replyMsg = "BOOM tout le monde a perdu 20% de ses points !";
