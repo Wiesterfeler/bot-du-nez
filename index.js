@@ -273,6 +273,11 @@ client.on('messageCreate', message => {
 				} else {
 					if (message.mentions.users.size > 0) {
 						branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0).id);
+						
+						if (branlos === undefined) {
+							branlos = {id: message.mentions.users.at(0).id, name: message.mentions.users.at(0).username, pts: 0};
+							guild.branleurs.push(branlos);
+						}
 					} else {
 						branlos = guild.branleurs.find(branleur => branleur.id === message.author.id);
 
