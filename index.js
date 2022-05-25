@@ -140,7 +140,7 @@ client.on('messageCreate', message => {
 				return;
 			}
 
-			if(Number.parseInt(messageContent.split(' ').at(3) >= 0)) {
+			if(Number.parseInt(messageContent.split(' ').at(3)) >= 0) {
 				if(donor.pts - Number.parseInt(messageContent.split(' ').at(3)) >= 0) {
 					branlos.pts += Number.parseInt(messageContent.split(' ').at(3));
 					donor.pts -= Number.parseInt(messageContent.split(' ').at(3));
