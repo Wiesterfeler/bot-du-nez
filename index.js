@@ -301,7 +301,7 @@ client.on('messageCreate', message => {
 						replyMsg += "Cheh " + branlos.name + " Tu as perdu un point, tu as donc " + branlos.pts + " points(s)";
 					} else {
 						branlos.pts = branlos.pts + 2;
-						replyMsg += "Le.a boug a voulu t'enlever un point alors que tu n'en avais déjà plus, abusé non ? pour la peine " + branlos.name + " je t'en donne 2, tu as " + branlos.pts + " points";
+						replyMsg += "Le.a boug a voulu t'enlever plus de point que ce que tu as, abusé non ? pour la peine " + branlos.name + " je t'en donne 2, tu as " + branlos.pts + " points";
 					}
 				} 
 				
