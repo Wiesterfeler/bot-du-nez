@@ -92,11 +92,11 @@ client.on('messageCreate', message => {
 			return;
 		}
 
-		if (splittedMessage[1].split("+") === 2) {
+		if (splittedMessage[1].split("+").length === 2) {
 			diceResult = Number.parseInt(splittedMessage[1].split("+")[1]);
 		}
 
-		if (splittedMessage[1].split("-") === 2) {
+		if (splittedMessage[1].split("-").length === 2) {
 			diceResult = 0 - Number.parseInt(splittedMessage[1].split("-")[1]);
 		}
 
