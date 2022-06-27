@@ -100,6 +100,8 @@ client.on('messageCreate', message => {
 			diceResult = 0 - Number.parseInt(splittedMessage[1].split("-")[1]);
 		}
 
+		console.log(diceResult);
+
 		replyMsg += "Tu as fait :";
 		for (i = 0; i < Number.parseInt(splittedMessage[1].match(/^\d/)); i++) {
 			replyMsg += "\n" +  (tools.getRandomInt(splittedMessage[3]) + diceResult + 1);
