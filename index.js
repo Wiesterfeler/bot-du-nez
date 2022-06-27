@@ -47,11 +47,14 @@ let wordToBeFound = tools.getNewWord(fs);
 let splittedMessage = [];
 let diceResult = 0;
 
+console.log(wordToBeFound);
+
 const jobRandomHours = schedule.scheduleJob('0 0 0 * * *', function() {
 	randomHourPoints = tools.getRandomInt(24);
 	randomHourRandomPlayer = tools.getRandomInt(24);
 	console.log(tools.generateDate() + "Random numbers reset");
 	wordToBeFound = tools.getNewWord(fs);
+	console.log(wordToBeFound);
 	guilds = JSON.parse(fs.readFileSync('branleurs.json'));
 	guilds.forEach(guild => {
 		guild.wordFound = false;
@@ -84,15 +87,27 @@ client.on('messageCreate', message => {
 		diceResult = 0;
 		replyMsg = "";
 
-		if (splittedMessage.length < 4) {
+		if (splittedMessage.length < 2) {
 			message.reply("j'ai pas compris quel dé tu veux lancer");
+			return;
 		}
+
+		if (splittedMessage[1].split("+") === 2) {
+			diceResult = Number.parseInt(splittedMessage[1].split("+")[1]);
+		}
+
+		if (splittedMessage[1].split("-") === 2) {
+			diceResult = 0 - Number.parseInt(splittedMessage[1].split("-")[1]);
+		}
+
 		replyMsg += "Tu as fait :";
 		for (i = 0; i < splittedMessage[1]; i++) {
-			replyMsg += "\n" +  (tools.getRandomInt(splittedMessage[3]) + 1);
+			replyMsg += "\n" +  (tools.getRandomInt(splittedMessage[3]) + diceResult + 1);
 		}
 
 		message.reply(replyMsg);
+
+		return;
 	}
 
 	if (guild === undefined){
@@ -132,7 +147,7 @@ client.on('messageCreate', message => {
 		if(guild.wordFound === false) {
 			branlos = tools.findBranlos(message, guild);
 			guild.wordFound = true;
-			branlos.pts = branlos.pts + 5;
+			branlos.pts = branlos.pts + 25;
 			replyMsg += "Bravo " + branlos.name + " ! Tu as été le.a premier.e à trouver le mot secret \"" + wordToBeFound + "\", tu as " + branlos.pts + " point(s)";
 
 			newData = JSON.stringify(guilds, null, 4);
@@ -315,9 +330,9 @@ client.on('messageCreate', message => {
 				}
 				
 				if(messageContent.startsWith("-NEZ") || messageContent.startsWith("-NOSE")) {
-					if(branlos.pts - ptsWon >= 1) {
+					if(branlos.pts - ptsWon >= 0) {
 						branlos.pts = branlos.pts - ptsWon;
-						replyMsg += "Cheh " + branlos.name + " Tu as perdu un point, tu as donc " + branlos.pts + " points(s)";
+						replyMsg += "Cheh " + branlos.name + " Tu as perdu " + ptsWon + " point, tu as donc " + branlos.pts + " points(s)";
 					} else {
 						branlos.pts = branlos.pts + 2;
 						replyMsg += "Le.a boug a voulu t'enlever un point alors que tu n'en avais déjà plus, abusé non ? pour la peine " + branlos.name + " je t'en donne 2, tu as " + branlos.pts + " points";
