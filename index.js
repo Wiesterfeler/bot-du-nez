@@ -101,7 +101,7 @@ client.on('messageCreate', message => {
 		}
 
 		replyMsg += "Tu as fait :";
-		for (i = 0; i < Number.parseInt(splittedMessage[1].match(/d([0-9]*)/)[1]); i++) {
+		for (i = 0; i < Number.parseInt(splittedMessage[1].match(/D([0-9]*)/)[1]); i++) {
 			replyMsg += "\n" +  (tools.getRandomInt(splittedMessage[3]) + diceResult + 1);
 		}
 
