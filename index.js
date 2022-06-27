@@ -44,6 +44,8 @@ let randomHourPoints = tools.getRandomInt(24);
 let randomHourRandomPlayer = tools.getRandomInt(24);
 let ptsWon = 1;
 let wordToBeFound = tools.getNewWord(fs);
+let splittedMessage = [];
+let diceResult = 0;
 
 const jobRandomHours = schedule.scheduleJob('0 0 0 * * *', function() {
 	randomHourPoints = tools.getRandomInt(24);
@@ -76,6 +78,22 @@ client.on('messageCreate', message => {
 	messageContent = message.content.toUpperCase();
 
 	guild = guilds.find(guild => guild.id === message.guild.id);
+
+	if (messageContent.startsWith("JDR")) {
+		splittedMessage = messageContent.split(" ");
+		diceResult = 0;
+		replyMsg = "";
+
+		if (splittedMessage.length < 4) {
+			message.reply("j'ai pas compris quel dé tu veux lancer");
+		}
+		replyMsg += "Tu as fait :";
+		for (i = 0; i < splittedMessage[1]; i++) {
+			replyMsg += "\n" +  (tools.getRandomInt(splittedMessage[3]) + 1);
+		}
+
+		message.reply(replyMsg);
+	}
 
 	if (guild === undefined){
 		guild = {id: message.guild.id, branleurs: [], alreadyWon: false, alreadyWonMessagesIndex: 0, lastMinutesWon: (date.getHours() - 1), wordFound: false, predator: [{charge: 0}, {used: false}]};
@@ -141,12 +159,13 @@ client.on('messageCreate', message => {
 			}
 
 			if(Number.parseInt(messageContent.split(' ').at(3)) >= 0) {
-				if(donor.pts - Number.parseInt(messageContent.split(' ').at(3)) >= 0) {
+				if((donor.pts - Number.parseInt(messageContent.split(' ').at(3))) >= 0) {
 					branlos.pts += Number.parseInt(messageContent.split(' ').at(3));
 					donor.pts -= Number.parseInt(messageContent.split(' ').at(3));
 	
 					newData = JSON.stringify(guilds, null, 4);
 					fs.writeFileSync('branleurs.json', newData);
+	
 	
 					message.reply("YOU'RE SO CHARITABLE YOU GAVE " + Number.parseInt(messageContent.split(' ').at(3)) + " points to " + branlos.name);
 	
@@ -301,7 +320,7 @@ client.on('messageCreate', message => {
 						replyMsg += "Cheh " + branlos.name + " Tu as perdu un point, tu as donc " + branlos.pts + " points(s)";
 					} else {
 						branlos.pts = branlos.pts + 2;
-						replyMsg += "Le.a boug a voulu t'enlever plus de point que ce que tu as, abusé non ? pour la peine " + branlos.name + " je t'en donne 2, tu as " + branlos.pts + " points";
+						replyMsg += "Le.a boug a voulu t'enlever un point alors que tu n'en avais déjà plus, abusé non ? pour la peine " + branlos.name + " je t'en donne 2, tu as " + branlos.pts + " points";
 					}
 				} 
 				
