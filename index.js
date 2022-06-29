@@ -82,39 +82,6 @@ client.on('messageCreate', message => {
 
 	guild = guilds.find(guild => guild.id === message.guild.id);
 
-	if (messageContent.startsWith("JDR")) {
-		splittedMessage = messageContent.split(" ");
-		diceResult = 0;
-		replyMsg = "";
-
-		if (splittedMessage.length < 2) {
-			message.reply("j'ai pas compris quel dé tu veux lancer");
-			return;
-		}
-
-		if (splittedMessage[1].split("+").length === 2) {
-			diceResult = Number.parseInt(splittedMessage[1].split("+")[1]);
-		}
-
-		if (splittedMessage[1].split("-").length === 2) {
-			diceResult = 0 - Number.parseInt(splittedMessage[1].split("-")[1]);
-		}
-
-		replyMsg += "Tu as fait :";
-		for (i = 0; i < Number.parseInt(splittedMessage[1].match(/^\d/)); i++) {
-			if (null === splittedMessage[1].match(/D([0-9]*)/)) {
-				message.reply('pas compris');
-				return;
-			}
-
-			replyMsg += "\n" +  (tools.getRandomInt(Number.parseInt(splittedMessage[1].match(/D([0-9]*)/)[1])) + diceResult + 1);
-		}
-
-		message.reply(replyMsg);
-
-		return;
-	}
-
 	if (guild === undefined){
 		guild = {id: message.guild.id, branleurs: [], alreadyWon: false, alreadyWonMessagesIndex: 0, lastMinutesWon: (date.getHours() - 1), wordFound: false, predator: [{charge: 0}, {used: false}]};
 		console.log("guild :" + guild.name + " created");
