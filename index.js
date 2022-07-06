@@ -3,7 +3,6 @@ const schedule = require('node-schedule');
 const { Client, Intents } = require('discord.js');
 const { token } = require('./config.json');
 const tools = require('./functions.js');
-const { getRandomInt } = require('./functions.js');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
@@ -13,7 +12,7 @@ client.once('ready', () => {
 
 client.login(token);
 
-let data = fs.readFileSync('branleurs.json');
+let data = fs.readFileSync('./branleurs.json');
 let guilds = JSON.parse(data);
 let guild = undefined;
 let branlos = undefined;
@@ -55,17 +54,17 @@ const jobRandomHours = schedule.scheduleJob('0 0 0 * * *', function() {
 	console.log(tools.generateDate() + "Random numbers reset");
 	wordToBeFound = tools.getNewWord(fs);
 	console.log(wordToBeFound);
-	guilds = JSON.parse(fs.readFileSync('branleurs.json'));
+	guilds = JSON.parse(fs.readFileSync('./branleurs.json'));
 	guilds.forEach(guild => {
 		guild.wordFound = false;
 	});
-	fs.writeFileSync('branleurs.json', JSON.stringify(guilds, null, 4));
+	fs.writeFileSync('./branleurs.json', JSON.stringify(guilds, null, 4));
 });
 
 const jobResetScores = schedule.scheduleJob('0 0 0 * * 1', function() {
-	fs.writeFileSync('branleurs_last_week.json', JSON.stringify(guilds, null, 4));
-	fs.writeFileSync('branleurs.json', "[]");
-	guilds = JSON.parse(fs.readFileSync('branleurs.json'));
+	fs.writeFileSync('./branleurs_last_week.json', JSON.stringify(guilds, null, 4));
+	fs.writeFileSync('./branleurs.json', "[]");
+	guilds = JSON.parse(fs.readFileSync('./branleurs.json'));
 	console.log(tools.generateDate() + "Scores cleared");
 });
 
@@ -86,18 +85,8 @@ client.on('messageCreate', message => {
 		guild = {id: message.guild.id, branleurs: [], alreadyWon: false, alreadyWonMessagesIndex: 0, lastMinutesWon: (date.getHours() - 1), wordFound: false, predator: [{charge: 0}, {used: false}]};
 		console.log("guild :" + guild.name + " created");
 		guilds.push(guild);
-		fs.writeFileSync('branleurs.json', JSON.stringify(guilds, null, 4));
+		fs.writeFileSync('./branleurs.json', JSON.stringify(guilds, null, 4));
 		console.log(tools.generateDate() + "Guilds serialized");
-	}
-
-	if (messageContent === "NEZ RESULTATS") {
-		message.reply(tools.sortBranleurs(JSON.parse(fs.readFileSync('branleurs_last_week.json')), guild));
-		return;
-	}
-
-	if (messageContent === "NEZ CLASSEMENT") {
-		message.reply(tools.sortBranleurs(guilds, guild));
-		return;
 	}
 
 	if (messageContent === "MATTHIEU EST RENTRÉ" || messageContent === "MATTBIEURT EST RENTRÉ" || (messageContent === "JE SUIS RENTRÉ" && message.author.id == 303274212091625472)) {
@@ -123,67 +112,10 @@ client.on('messageCreate', message => {
 			replyMsg += "Bravo " + branlos.name + " ! Tu as été le.a premier.e à trouver le mot secret \"" + wordToBeFound + "\", tu as " + branlos.pts + " point(s)";
 
 			newData = JSON.stringify(guilds, null, 4);
-			fs.writeFileSync('branleurs.json', newData);
+			fs.writeFileSync('./branleurs.json', newData);
 
 			message.reply(replyMsg);
 		}
-	}
-
-	if (messageContent.startsWith("NEZ DONATION <@")) {
-		if (message.mentions.users.size > 0 && Number.isInteger(Number.parseInt(messageContent.split(' ').at(3)))) {
-			branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0).id);
-			if (branlos === undefined) {
-				branlos = {id: message.mentions.users.at(0).id, name: message.mentions.users.at(0).username, pts: 0};
-				guild.branleurs.push(branlos);
-			}
-
-			let donor = guild.branleurs.find(donor => donor.id === message.author.id);
-
-			if (undefined == donor) {
-				message.reply("TU N'ES MEME PAS DANS LE CLASSEMENT ANDOUILLE");
-				
-				return;
-			}
-
-			if(Number.parseInt(messageContent.split(' ').at(3)) >= 0) {
-				if((donor.pts - Number.parseInt(messageContent.split(' ').at(3))) >= 0) {
-					branlos.pts += Number.parseInt(messageContent.split(' ').at(3));
-					donor.pts -= Number.parseInt(messageContent.split(' ').at(3));
-	
-					newData = JSON.stringify(guilds, null, 4);
-					fs.writeFileSync('branleurs.json', newData);
-	
-	
-					message.reply("YOU'RE SO CHARITABLE YOU GAVE " + Number.parseInt(messageContent.split(' ').at(3)) + " points to " + branlos.name);
-	
-					return;
-				}
-			}
-
-			message.reply("Tu ne peux pas donner plus que ce que tu as !");
-		}
-
-		return;
-	}
-
-	if (messageContent.startsWith("NEZ ADMIN DONATION <@") && message.author.id == 182171696004857866) {
-		if (message.mentions.users.size > 0 && Number.isInteger(Number.parseInt(messageContent.split(' ').at(4)))) {
-			branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0).id);
-
-			if (branlos === undefined) {
-				branlos = {id: message.mentions.users.at(0).id, name: message.mentions.users.at(0).username, pts: 0};
-				guild.branleurs.push(branlos);
-			}
-
-			branlos.pts += Number.parseInt(messageContent.split(' ').at(4));
-
-			newData = JSON.stringify(guilds, null, 4);
-			fs.writeFileSync('branleurs.json', newData);
-
-			message.reply(branlos.name + " a eu " + Number.parseInt(messageContent.split(' ').at(4)) + " points, tu as donc " + branlos.pts + " point(s)");
-		}
-
-		return;
 	}
 
 	if(messageContent.startsWith("MISSILE PREDATOR") && (message.author.id == 382785159998472192 || message.author.id == 149141535705792512)) {
@@ -193,7 +125,7 @@ client.on('messageCreate', message => {
 					guild.predator.charge++;
 
 					newData = JSON.stringify(guilds, null, 4);
-					fs.writeFileSync('branleurs.json', newData);
+					fs.writeFileSync('./branleurs.json', newData);
 					
 					message.reply("Missile predator chargé, il a désormais " + guild.predator.charge + " charge(s)");
 					
@@ -250,7 +182,7 @@ client.on('messageCreate', message => {
 			guild.predator.used = true;
 			
 			newData = JSON.stringify(guilds, null, 4);
-			fs.writeFileSync('branleurs.json', newData);
+			fs.writeFileSync('./branleurs.json', newData);
 
 			message.reply(replyMsg);
 
@@ -258,6 +190,77 @@ client.on('messageCreate', message => {
 		}
 
 		message.reply("IL N'EST PAS L'HEURE ESPECE DE CON");
+
+		return;
+	}
+
+	if (!messageContent.includes("NEZ")) {
+		return;
+	}
+
+	if (messageContent === "NEZ RESULTATS") {
+		message.reply(tools.sortBranleurs(JSON.parse(fs.readFileSync('./branleurs_last_week.json')), guild));
+		return;
+	}
+
+	if (messageContent === "NEZ CLASSEMENT") {
+		message.reply(tools.sortBranleurs(guilds, guild));
+		return;
+	}
+
+	if (messageContent.startsWith("NEZ DONATION <@")) {
+		if (message.mentions.users.size > 0 && Number.isInteger(Number.parseInt(messageContent.split(' ').at(3)))) {
+			branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0).id);
+			if (branlos === undefined) {
+				branlos = {id: message.mentions.users.at(0).id, name: message.mentions.users.at(0).username, pts: 0};
+				guild.branleurs.push(branlos);
+			}
+
+			let donor = guild.branleurs.find(donor => donor.id === message.author.id);
+
+			if (undefined == donor) {
+				message.reply("TU N'ES MEME PAS DANS LE CLASSEMENT ANDOUILLE");
+				
+				return;
+			}
+
+			if(Number.parseInt(messageContent.split(' ').at(3)) >= 0) {
+				if((donor.pts - Number.parseInt(messageContent.split(' ').at(3))) >= 0) {
+					branlos.pts += Number.parseInt(messageContent.split(' ').at(3));
+					donor.pts -= Number.parseInt(messageContent.split(' ').at(3));
+	
+					newData = JSON.stringify(guilds, null, 4);
+					fs.writeFileSync('./branleurs.json', newData);
+	
+	
+					message.reply("YOU'RE SO CHARITABLE YOU GAVE " + Number.parseInt(messageContent.split(' ').at(3)) + " points to " + branlos.name);
+	
+					return;
+				}
+			}
+
+			message.reply("Tu ne peux pas donner plus que ce que tu as !");
+		}
+
+		return;
+	}
+
+	if (messageContent.startsWith("NEZ ADMIN DONATION <@") && message.author.id == 182171696004857866) {
+		if (message.mentions.users.size > 0 && Number.isInteger(Number.parseInt(messageContent.split(' ').at(4)))) {
+			branlos = guild.branleurs.find(branleur => branleur.id === message.mentions.users.at(0).id);
+
+			if (branlos === undefined) {
+				branlos = {id: message.mentions.users.at(0).id, name: message.mentions.users.at(0).username, pts: 0};
+				guild.branleurs.push(branlos);
+			}
+
+			branlos.pts += Number.parseInt(messageContent.split(' ').at(4));
+
+			newData = JSON.stringify(guilds, null, 4);
+			fs.writeFileSync('./branleurs.json', newData);
+
+			message.reply(branlos.name + " a eu " + Number.parseInt(messageContent.split(' ').at(4)) + " points, tu as donc " + branlos.pts + " point(s)");
+		}
 
 		return;
 	}
@@ -329,7 +332,7 @@ client.on('messageCreate', message => {
 			}
 
  			newData = JSON.stringify(guilds, null, 4);
-			fs.writeFileSync('branleurs.json', newData);
+			fs.writeFileSync('./branleurs.json', newData);
 		} else {
 			if(message.author.id == 382785159998472192)
 				message.reply("Désolé Baptiste, ce n'est pas l'heure, il faut que ce soit le même chiffre des minutes que les heures");
