@@ -194,7 +194,7 @@ client.on('messageCreate', message => {
 		return;
 	}
 
-	if (!messageContent.includes("NEZ")) {
+	if (!messageContent.includes("NEZ") && !messageContent.includes("NOSE")) {
 		return;
 	}
 
